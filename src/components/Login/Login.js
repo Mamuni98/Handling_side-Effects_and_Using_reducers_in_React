@@ -1,4 +1,10 @@
-import React, { useState, useReducer, useContext, useEffect } from "react";
+import React, {
+  useState,
+  useReducer,
+  useContext,
+  useEffect,
+  useRef,
+} from "react";
 
 import Card from "../UI/Card/Card";
 import classes from "./Login.module.css";
@@ -21,7 +27,10 @@ const passwordReducer = (prevstate, action) => {
     return { value: action.val, isValid: action.val.trim().length > 6 };
   }
   if (action.type === "PASS_BLUR") {
-    return { value: prevstate.value, isValid: prevstate.value.trim().length > 6 };
+    return {
+      value: prevstate.value,
+      isValid: prevstate.value.trim().length > 6,
+    };
   }
   return { value: "", isValid: false };
 };
@@ -31,7 +40,10 @@ const collegeReducer = (prevstate, action) => {
     return { value: action.val, isValid: action.val.trim().length > 0 };
   }
   if (action.type === "CLG_BLUR") {
-    return { value: prevstate.value, isValid: prevstate.value.trim().length > 0 };
+    return {
+      value: prevstate.value,
+      isValid: prevstate.value.trim().length > 0,
+    };
   }
   return { value: "", isValid: false };
 };
@@ -62,8 +74,12 @@ const Login = () => {
   const { isValid: passwordIsValid } = passwordState;
   const { isValid: collegeIsValid } = collegeState;
 
+  const emailInputRef = useRef();
+  const passwordInputRef = useRef();
+  const collegeInputRef = useRef();
+
   const cntxt = useContext(AuthContext);
-// ONLY SHOWS HOW useEffect WORKS
+  // ONLY SHOWS HOW useEffect WORKS
   // useEffect(() => {
   //   console.log("Effect running");
 
@@ -125,13 +141,25 @@ const Login = () => {
 
   const submitHandler = (event) => {
     event.preventDefault();
-    cntxt.onLogin(emailState.value, passwordState.value, collegeState.value);
+    if (formIsValid) {
+      cntxt.onLogin(emailState.value, passwordState.value, collegeState.value);
+    } 
+    else if (!emailIsValid) {
+      emailInputRef.current.focus();
+    } 
+    else if (!passwordIsValid) {
+      passwordInputRef.current.focus();
+    } 
+    else {
+      collegeInputRef.current.focus();
+    }
   };
 
   return (
     <Card className={classes.login}>
       <form onSubmit={submitHandler}>
         <Input
+          ref={emailInputRef}
           label="E-mail"
           type="email"
           id="email"
@@ -141,6 +169,7 @@ const Login = () => {
           onBlur={validateEmailHandler}
         />
         <Input
+          ref={passwordInputRef}
           label="Password"
           type="password"
           id="password"
@@ -150,6 +179,7 @@ const Login = () => {
           onBlur={validatePasswordHandler}
         />
         <Input
+          ref={collegeInputRef}
           label="College Name"
           type="text"
           id="college"
@@ -159,7 +189,7 @@ const Login = () => {
           onBlur={validateCollegeHandler}
         />
         <div className={classes.actions}>
-          <Button type="submit" className={classes.btn} disabled={!formIsValid}>
+          <Button type="submit" className={classes.btn}>
             Login
           </Button>
         </div>
