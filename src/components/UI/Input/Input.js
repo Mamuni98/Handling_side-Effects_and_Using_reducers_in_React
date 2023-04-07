@@ -21,3 +21,23 @@ const Input = (props) => {
 };
 
 export default Input;
+// ref={amountInputRef}
+//         label='Amount'
+//         input={{
+//           id: 'amount_' + props.id,
+//           type: 'text',
+//           min: '1',
+//           max: '5',
+//           step: '1',
+//           defaultValue: '1',
+//         }}
+// const Input = React.forwardRef((props, ref) => {
+//   return (
+//     <div className={classes.input}>
+//       <label htmlFor={props.input.id}>{props.label}</label>
+//       <input ref={ref} {...props.input} />
+//     </div>
+//   );
+// });
+
+// export default Input;

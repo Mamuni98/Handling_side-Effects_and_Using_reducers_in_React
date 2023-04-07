@@ -7,31 +7,31 @@ import AuthContext from "../../store/auth-context";
 import Input from "../UI/Input/Input";
 
 const emailReducer = (prevstate, action) => {
-  if (action.type === "USER_INPUT") {
+  if (action.type === "EMAIL_INPUT") {
     return { value: action.val, isValid: action.val.includes("@") };
   }
-  if (action.type === "USER_BLUR") {
-    return { value: prevstate.val, isValid: prevstate.value.includes("@") };
+  if (action.type === "EMAIL_BLUR") {
+    return { value: prevstate.value, isValid: prevstate.value.includes("@") };
   }
   return { value: "", isValid: false };
 };
 
 const passwordReducer = (prevstate, action) => {
-  if (action.type === "USER_INPUT") {
+  if (action.type === "PASS_INPUT") {
     return { value: action.val, isValid: action.val.trim().length > 6 };
   }
-  if (action.type === "USER_BLUR") {
-    return { value: prevstate.val, isValid: prevstate.value.trim().length > 6 };
+  if (action.type === "PASS_BLUR") {
+    return { value: prevstate.value, isValid: prevstate.value.trim().length > 6 };
   }
   return { value: "", isValid: false };
 };
 
 const collegeReducer = (prevstate, action) => {
-  if (action.type === "USER_INPUT") {
+  if (action.type === "CLG_INPUT") {
     return { value: action.val, isValid: action.val.trim().length > 0 };
   }
-  if (action.type === "USER_BLUR") {
-    return { value: prevstate.val, isValid: prevstate.value.trim().length > 0 };
+  if (action.type === "CLG_BLUR") {
+    return { value: prevstate.value, isValid: prevstate.value.trim().length > 0 };
   }
   return { value: "", isValid: false };
 };
@@ -58,6 +58,10 @@ const Login = () => {
     isValid: null,
   });
 
+  const { isValid: emailIsValid } = emailState;
+  const { isValid: passwordIsValid } = passwordState;
+  const { isValid: collegeIsValid } = collegeState;
+
   const cntxt = useContext(AuthContext);
 // ONLY SHOWS HOW useEffect WORKS
   // useEffect(() => {
@@ -68,24 +72,20 @@ const Login = () => {
   //   };
   // }, []);
 
-  const { isValid: emailIsValid } = emailState;
-  const { isValid: passwordIsValid } = passwordState;
-  const { isValid: collegeIsValid } = collegeState;
-
   useEffect(() => {
     const identifier = setTimeout(() => {
       console.log("Checking form validity!");
       setFormIsValid(emailIsValid && passwordIsValid && collegeIsValid);
     }, 1000);
-
+    console.log(" After Cleanup");
     return () => {
-      console.log("Cleanup");
       clearTimeout(identifier);
+      console.log("Cleanup");
     };
   }, [emailIsValid, passwordIsValid, collegeIsValid]);
 
   const emailChangeHandler = (event) => {
-    dispatchEmail({ type: "USER_INPUT", val: event.target.value });
+    dispatchEmail({ type: "EMAIL_INPUT", val: event.target.value });
     // setFormIsValid(
     //   event.target.value.includes("@") &&
     //     passwordState.isValid &&
@@ -94,7 +94,7 @@ const Login = () => {
   };
 
   const passwordChangeHandler = (event) => {
-    dispatchPassword({ type: "USER_INPUT", val: event.target.value });
+    dispatchPassword({ type: "PASS_INPUT", val: event.target.value });
     // setFormIsValid(
     //   emailState.isValid &&
     //     event.target.value.trim().length > 6 &&
@@ -103,7 +103,7 @@ const Login = () => {
   };
 
   const collegeChangeHandler = (event) => {
-    dispatchCollege({ type: "USER_INPUT", val: event.target.value });
+    dispatchCollege({ type: "CLG_INPUT", val: event.target.value });
     // setFormIsValid(
     //   emailState.isValid &&
     //     passwordState.isValid &&
@@ -112,15 +112,15 @@ const Login = () => {
   };
 
   const validateEmailHandler = () => {
-    dispatchEmail({ type: "USER_BLUR" });
+    dispatchEmail({ type: "EMAIL_BLUR" });
   };
 
   const validatePasswordHandler = () => {
-    dispatchPassword({ type: "USER_BLUR" });
+    dispatchPassword({ type: "PASS_BLUR" });
   };
 
   const validateCollegeHandler = () => {
-    dispatchCollege({ type: "USER_BLUR" });
+    dispatchCollege({ type: "CLG_BLUR" });
   };
 
   const submitHandler = (event) => {
